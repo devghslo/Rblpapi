@@ -66,7 +66,7 @@ getBars <- function(security,
                     verbose = FALSE,
                     returnAs = getOption("blpType", "matrix"),
                     tz = Sys.getenv("TZ", unset="UTC"),
-                    con = defaultConnection()) {
+                    con = defaultConnection(),identity=defaultAuthentication()) {
 
     match.arg(returnAs, c("matrix", "fts", "xts", "zoo", "data.table"))
     if (!inherits(startTime, "POSIXt") || !inherits(endTime, "POSIXt")) {
@@ -75,8 +75,8 @@ getBars <- function(security,
     fmt <- "%Y-%m-%dT%H:%M:%S"
     startUTC <- format(startTime, fmt, tz="UTC")
     endUTC <- format(endTime, fmt, tz="UTC")
-    res <- getBars_Impl(con, security, eventType, barInterval,
-                        startUTC, endUTC, options, verbose)
+    res <- getBars_Impl(con, identity,security, eventType, barInterval,
+                        startUTC, endUTC, options)
 
     attr(res[,1], "tzone") <- tz
 
