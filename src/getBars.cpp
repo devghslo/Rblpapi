@@ -155,16 +155,16 @@ void processResponseEvent(bbg::Event &event, Bars &bars,
 }
 
 // [[Rcpp::export]]
-Rcpp::DataFrame getBars_Impl(SEXP con,
+Rcpp::DataFrame getBars_Impl(SEXP con,SEXP identity_,
                              std::string security,
                              std::string eventType,
                              int barInterval,
                              std::string startDateTime,
                              std::string endDateTime,
-                             Rcpp::Nullable<Rcpp::CharacterVector> options,
-                             bool verbose=false) {
+                             Rcpp::Nullable<Rcpp::CharacterVector> options) {
 
     // via Rcpp Attributes we get a try/catch block with error propagation to R "for free"
+    bool verbose=false;
     bbg::Session* session =
         reinterpret_cast<bbg::Session*>(checkExternalPointer(con,"blpapi::Session*"));
 
@@ -187,7 +187,7 @@ Rcpp::DataFrame getBars_Impl(SEXP con,
     }
 
     if (verbose) Rcpp::Rcout <<"Sending Request: " << request << std::endl;
-    session->sendRequest(request);
+    sendRequestWithIdentity(session, request, identity_);
 
     Bars bars;
 
